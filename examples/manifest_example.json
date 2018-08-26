@@ -1,0 +1,10 @@
+{
+  "accounts":
+    [
+     "C:/Users/Random/Example/BankAccount1",
+     "C:/Users/Random/Example/BankAccount2",
+     "C:/Users/Random/Example/BankAccount3"
+    ],
+  "merged_output": "C:/Users/Random/Example/merged.csv",
+  "merged_output_ud": "C:/Users/Random/Example/merged_ud.csv"
+}
