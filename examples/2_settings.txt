@@ -1,0 +1,16 @@
+Example:
+
+{
+  "negate_transactions": true,
+  "description_mapping": true
+}
+
+Description:
+
+"negate_transactions" (default false) will multiply every transaction by negative one. Useful for Visa/Credit card accounts.
+"description_mapping" (default false) will add a new column to the transactions CSV according to the following algorithm:
+* The program will open "mapping.csv" (by defauly in the same directory as this file, but can be specified with another option)
+* It will check if a transactions description matches any regex in the "regex" column. If it does, the transaction gets a new column called "category" which will get the value of "output" in "mapping.csv"
+
+
+"description_mapping_path" (default is the account directory / mapping.csv). This is the mapping file that will be used above. It needs two columns. A regex column, and a output value.

@@ -1,8 +1,10 @@
 import logging
 from os import PathLike
 
+import json
 import pandas as pd
 import parser_utils
+import re
 from rbc_chequing import RbcBankStatement
 from rbc_visa import RbcVisaStatement
 from pathlib import Path
@@ -12,6 +14,13 @@ from rbc_statement import Statement
 
 logging.basicConfig(format='%(asctime)s,%(msecs)d %(levelname)-8s [%(filename)s:%(lineno)d] %(message)s',
                     datefmt='%d-%m-%Y:%H:%M:%S')
+
+
+def mapping_func(row, desc_map):
+    for index, key in desc_map.iterrows():
+        if re.search(key['regex'], row['desc']):
+            return key['output']
+    return ''
 
 
 class StatementFactory:
@@ -56,6 +65,8 @@ class Account:
         self.transactions = pd.DataFrame()
 
         statements: List[Path] = self.path.glob('*.pdf')
+
+        # Create the statement table here
         for statement in statements:
             if not skip_rename:
                 rename_target: str = str(statement)
@@ -71,9 +82,22 @@ class Account:
         if name is not None:
             self.transactions.insert(1, 'account', name)
 
+        conf_path = path / 'settings.json'
+        if conf_path.is_file():
+            with open(conf_path, 'r') as settings_file:
+                settings = json.load(settings_file)
+            if settings.get('negate_transactions', False):
+                self.transactions['amount'] *= -1
+            if settings.get('description_mapping', False):
+                mapping = pd.read_csv(settings.get('description_mapping_path', path / 'mapping.csv'))
+                self.transactions['category'] = self.transactions.apply(lambda row: mapping_func(row, mapping), axis=1)
+
     def save_csv(self, path: Path):
         self.transactions.sort_values(by=['trans_date'], inplace=True)
-        self.transactions.to_csv(path, index=False)
+        try:
+            self.transactions.to_csv(path, index=False)
+        except PermissionError:
+            logging.error("Permission denied for " + str(path) + ". Is this file in use?")
 
 
 def merge_accounts(accounts: List[Account], path: PathLike, unique_date=False) -> None:

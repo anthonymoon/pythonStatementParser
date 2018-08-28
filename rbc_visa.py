@@ -76,4 +76,4 @@ class RbcVisaStatement(Statement):
         transactions = round(Decimal(self.transaction_table['amount'].sum()), 2)
         if transactions + opening_balance != closing_balance:
             raise ValueError("The (closing balance) != (opening balance) + (transactions)")
-        self.transaction_table['amount'] *= -1
+

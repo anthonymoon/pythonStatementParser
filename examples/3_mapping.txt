@@ -1,0 +1,9 @@
+Example:
+
+regex,output
+Random store 1,Clothing
+Random store 2,Clothing
+Random store \d,Clothing
+
+
+Note: Don't use regex with a comma. That will probably mess things up since this is a CSV

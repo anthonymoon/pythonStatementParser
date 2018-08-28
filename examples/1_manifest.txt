@@ -1,0 +1,17 @@
+Example:
+
+{
+  "accounts":
+    [
+     "C:/Users/Random/Example/BankAccount1",
+     "C:/Users/Random/Example/BankAccount2",
+     "C:/Users/Random/Example/BankAccount3"
+    ],
+  "merged_output": "C:/Users/Random/Example/merged.csv",
+  "merged_output_ud": "C:/Users/Random/Example/merged_ud.csv"
+}
+
+Description:
+The top level "accounts" key contains an array to directories which contain all the .pdf statement files
+The "merged_output" key contains a path to a file that will contain all the transactions from all the accounts
+The "merged_output_ud" is the same thing as above, but with unique dates. Basically, the sum off all transactions per day
