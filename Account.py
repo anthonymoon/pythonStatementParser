@@ -5,6 +5,7 @@ import json
 import pandas as pd
 import parser_utils
 import re
+import os
 from rbc_chequing import RbcBankStatement
 from rbc_visa import RbcVisaStatement
 from pathlib import Path
@@ -89,8 +90,11 @@ class Account:
             if settings.get('negate_transactions', False):
                 self.transactions['amount'] *= -1
             if settings.get('description_mapping', False):
+                working_dir = os.getcwd()
+                os.chdir(path)
                 mapping = pd.read_csv(settings.get('description_mapping_path', path / 'mapping.csv'))
                 self.transactions['category'] = self.transactions.apply(lambda row: mapping_func(row, mapping), axis=1)
+                os.chdir(working_dir)
 
     def save_csv(self, path: Path):
         self.transactions.sort_values(by=['trans_date'], inplace=True)
