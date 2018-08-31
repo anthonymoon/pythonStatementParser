@@ -20,8 +20,10 @@ logging.basicConfig(format='%(asctime)s,%(msecs)d %(levelname)-8s [%(filename)s:
 def mapping_func(row, desc_map):
     for index, key in desc_map.iterrows():
         if re.search(key['regex'], row['desc']):
-            return key['output']
-    return ''
+            if ('start_date' not in key or pd.isnull(key['start_date']) or key['start_date'] <= row['trans_date']) \
+                    and ('end_date' not in key or pd.isnull(key['end_date']) or key['end_date'] > row['trans_date']):
+                return key['output']
+    return '-'
 
 
 class StatementFactory:
@@ -90,9 +92,13 @@ class Account:
             if settings.get('negate_transactions', False):
                 self.transactions['amount'] *= -1
             if settings.get('description_mapping', False):
-                working_dir = os.getcwd()
+                working_dir = Path.cwd()
                 os.chdir(path)
                 mapping = pd.read_csv(settings.get('description_mapping_path', path / 'mapping.csv'))
+                if 'start_date' in mapping:
+                    mapping['start_date'] = pd.to_datetime(mapping['start_date'])
+                if 'end_date' in mapping:
+                    mapping['end_date'] = pd.to_datetime(mapping['end_date'])
                 self.transactions['category'] = self.transactions.apply(lambda row: mapping_func(row, mapping), axis=1)
                 os.chdir(working_dir)
 
