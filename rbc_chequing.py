@@ -90,3 +90,7 @@ class RbcBankStatement(Statement):
         close = Decimal(closing_balance)
         if estimated_close != close:
             raise ValueError("The (closing balance) != (opening balance) + (transactions)")
+
+        self.transaction_table = self.transaction_table['Misc Payment RBC CREDIT CARD'
+                                                        !=
+                                                        self.transaction_table.desc]

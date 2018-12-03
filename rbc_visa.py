@@ -43,7 +43,6 @@ class RbcVisaStatement(Statement):
         amount = parser_utils.money_reg.findall(line)
         row['amount'] = parser_utils.str_to_money(amount[0])
         self.transaction_table = self.transaction_table.append(row, ignore_index=True)
-        pass
 
     def parse(self, str_data: str):
         str_data = str_data.splitlines()
@@ -76,4 +75,8 @@ class RbcVisaStatement(Statement):
         transactions = round(Decimal(self.transaction_table['amount'].sum()), 2)
         if transactions + opening_balance != closing_balance:
             raise ValueError("The (closing balance) != (opening balance) + (transactions)")
+
+        self.transaction_table = self.transaction_table['AUTOMATIC PAYMENT - THANK YOU'
+                                                        !=
+                                                        self.transaction_table.desc]
 
